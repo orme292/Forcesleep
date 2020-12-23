@@ -9,7 +9,7 @@ import (
 )
 
 func findProcesses(print bool) (err int, result []string) {
-	cmd1 := "ps -ef | grep -i shutdown | grep -v grep | awk '{print $2}'"
+	cmd1 := "ps -ef | grep -i $(which shutdown) | grep -v grep | awk '{print $2}'"
 	output, cmderr := exec.Command("bash", "-c", cmd1).Output()
 	var processes []string
 	if cmderr != nil {
@@ -73,7 +73,14 @@ func main() {
 		fmt.Println("**A shutdown process already exists. Another will be created.**")
 		fmt.Println("- Use 'forcesleep cancel' to cancel.")
 	}
-	cmd := exec.Command("sudo", "shutdown", "-s", "+"+args)
+	cmd1 := "which shutdown"
+	output, cmderr := exec.Command("bash", "-c", cmd1).Output()
+	outputAdj := string(output)
+	outputAdj = strings.TrimSuffix(outputAdj, "\n")
+	if cmderr != nil {
+		fmt.Println("Error when trying to find shutdown binary.")
+	}
+	cmd := exec.Command("sudo", outputAdj, "-s", "+"+args)
 	err = cmd.Run()
 	if err != nil {
 		fmt.Println("Could not execute command.\n", err)
