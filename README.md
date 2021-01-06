@@ -7,7 +7,7 @@ A simple command line sleep timer for MacOS in Golang.
 ```bash
 git clone https://github.com/orme292/Forcesleep.git
 cd forcesleep/
-cp forcesleep /usr/local/bin/
+ln -s $(pwd)forcesleep /usr/local/bin/forcesleep
 ```
 
 ### To use ForceSleep
